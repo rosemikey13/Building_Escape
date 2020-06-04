@@ -25,7 +25,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-
-float TargetYaw = 90.0f;
+float InitialYaw = 0.0f
+float CurrentYaw = 0.0f;
+float TargetYaw = 0.0f;
 		
 };
