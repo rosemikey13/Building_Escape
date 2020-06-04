@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Components/ActorComponent.h"
 #include "OpenDoor.generated.h"
 
@@ -27,6 +28,8 @@ public:
 private:
 float InitialYaw = 0.0f;
 float CurrentYaw = 0.0f;
+
+UPROPERTY(EditAnywhere)
 float TargetYaw = 0.0f;
 		
 };
