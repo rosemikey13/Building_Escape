@@ -4,6 +4,9 @@
 #include "OpenDoor.h"
 #include "GameFramework/Actor.h"
 #include "Engine/TriggerVolume.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+
 
 
 
@@ -26,18 +29,35 @@ void UOpenDoor::BeginPlay()
 	InitialYaw = GetOwner()->GetActorRotation().Yaw;
 	CurrentYaw = InitialYaw;
 	TargetYaw += InitialYaw;
+
+	if(!PressurePlate)
+	{
+		UE_LOG(LogTemp,Error,TEXT("%s isn't working properly with the OpenDoor Component."),*GetOwner()->GetName());
+	}
 	
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void UOpenDoor::OpenDoor(float DeltaTime)
 {
 
     float CurrentYaw = GetOwner()->GetActorRotation().Yaw;
-	CurrentYaw = FMath::Lerp(CurrentYaw, TargetYaw, DeltaTime * 0.6f);
+	CurrentYaw = FMath::Lerp(CurrentYaw, TargetYaw, DeltaTime * OpeningSpeed);
 	FRotator DoorRot = GetOwner()->GetActorRotation();
 	DoorRot.Yaw = CurrentYaw;
 	GetOwner()->SetActorRotation(DoorRot);
 
+
+}
+
+void UOpenDoor::CloseDoor(float DeltaTime)
+{
+
+	float CurrentYaw = GetOwner()->GetActorRotation().Yaw;
+	CurrentYaw = FMath::Lerp(CurrentYaw, InitialYaw, DeltaTime * ClosingSpeed);
+	FRotator DoorRot = GetOwner()->GetActorRotation();
+	DoorRot.Yaw = CurrentYaw;
+	GetOwner()->SetActorRotation(DoorRot);
 
 }
 
@@ -47,10 +67,16 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	UE_LOG(LogTemp, Warning, TEXT("The Yaw of %s is %f"), *GetOwner()->GetName(), GetOwner()->GetActorRotation().Yaw);
 	
-	if(PressurePlate->IsOverlappingActor(ActorThatOpens))
+	if(PressurePlate && PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
 	OpenDoor(DeltaTime);
+	DoorLastOpened = GetWorld()->GetTimeSeconds();
 	}
-
+	else if(GetWorld()->GetTimeSeconds() - DoorLastOpened > DoorCloseDelay)
+	{
+		CloseDoor(DeltaTime);
+	}
+	
+	
 }
 
