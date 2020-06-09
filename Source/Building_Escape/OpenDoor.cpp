@@ -30,6 +30,8 @@ void UOpenDoor::BeginPlay()
 	CurrentYaw = InitialYaw;
 	TargetYaw += InitialYaw;
 
+		UE_LOG(LogTemp, Warning, TEXT("The Yaw of %s is %f"), *GetOwner()->GetName(), GetOwner()->GetActorRotation().Yaw);
+
 	if(!PressurePlate)
 	{
 		UE_LOG(LogTemp,Error,TEXT("%s isn't working properly with the OpenDoor Component."),*GetOwner()->GetName());
@@ -65,7 +67,7 @@ void UOpenDoor::CloseDoor(float DeltaTime)
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	UE_LOG(LogTemp, Warning, TEXT("The Yaw of %s is %f"), *GetOwner()->GetName(), GetOwner()->GetActorRotation().Yaw);
+
 	
 	if(PressurePlate && PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
@@ -75,6 +77,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	else if(GetWorld()->GetTimeSeconds() - DoorLastOpened > DoorCloseDelay)
 	{
 		CloseDoor(DeltaTime);
+		
 	}
 	
 	
