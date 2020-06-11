@@ -36,6 +36,8 @@ void Release();
 void HandleCheck();
 void InputCapture();
 FHitResult GetFirstPhsyicsBodyInReach() const;
+FVector GetPlayerReach() const;
+FVector GetPlayerWorldPos() const;
 
 protected:
 	// Called when the game starts
